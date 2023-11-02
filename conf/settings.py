@@ -150,7 +150,7 @@ JAZZMIN_SETTINGS = {
         "seh_1.productproduction": "fas fa-industry",
         "Anvaraka_sklad.warehouse": "fas fa-warehouse",
         "seh_1.productreproduction": "fas fa-cut",
-        "seh_1.sales": "fas fa-shopping-cart",
+        "Anvaraka_sklad.sales": "fas fa-shopping-cart",
     },
 }
 

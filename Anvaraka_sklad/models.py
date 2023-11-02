@@ -7,6 +7,7 @@ class Product(MPTTModel):
     MEASUREMENT_CHOICES = [
         ('kg', 'Kilogram'),
         ('l', 'Litr'),
+        ('m', 'Metr'),
         ('ta', 'Dona'),
     ]
 
@@ -64,5 +65,30 @@ class Warehouse(models.Model):
 
     def save(self, *args, **kwargs):
         self.price = self.component.price
+        self.total_price = self.price * self.quantity
+        super().save(*args, **kwargs)
+
+
+class Sales(models.Model):
+    component = models.ForeignKey(
+        Product, on_delete=models.CASCADE, verbose_name='Sotilgan mahsulot ', limit_choices_to={'parent__isnull': False})
+    quantity = models.IntegerField(verbose_name="Miqdor")
+    price = models.FloatField(default=0, verbose_name='Narxi')
+    total_price = models.FloatField(default=0, verbose_name='Umumiy narxi')
+    sold_time = models.DateTimeField(
+        auto_now_add=True, verbose_name='Sotilgan sana')
+
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='xodim')
+
+    class Meta:
+        verbose_name = 'Sotilgan Mahsulot '
+        verbose_name_plural = 'Sotuv'
+
+    def __str__(self):
+        return f"{self.quantity} {self.component.get_measurement_display()} - {self.component.title}"
+
+    def save(self, *args, **kwargs):
+        self.price = self.component.sell_price
         self.total_price = self.price * self.quantity
         super().save(*args, **kwargs)

@@ -3,7 +3,7 @@ from django.db.models import F, Sum
 from django.utils.html import format_html
 from mptt.admin import DraggableMPTTAdmin
 
-from .models import Product, Warehouse
+from .models import Product, Warehouse, Sales
 
 
 class ProductAdmin(DraggableMPTTAdmin):
@@ -92,5 +92,54 @@ class WarehouseAdmin(admin.ModelAdmin):
         return super().has_change_permission(request, obj)
 
 
+class SalesAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'get_price', 'user', 'sold_time')
+    list_filter = ('sold_time', 'component')
+    date_hierarchy = 'sold_time'
+    ordering = ('-sold_time',)
+    exclude = ('user', )
+    readonly_fields = ('price', 'total_price')
+
+    change_list_template = 'admin/warehouse_change_list.html'
+
+    def changelist_view(self, request, extra_context=None):
+        response = super().changelist_view(request, extra_context=extra_context)
+
+        queryset = self.get_queryset(request)
+        total_price = queryset.aggregate(total_price=Sum('total_price'))[
+            'total_price'] or 0
+        formatted_price = "{:,.1f}".format(total_price)
+
+        try:
+            response.context_data['summary_line'] = f"Umumiy narx: {formatted_price}"
+        except:
+            pass
+        return response
+
+    def get_price(self, obj):
+        formatted_price = "{:,.1f}".format(obj.total_price)
+        return formatted_price+'$'
+
+    get_price.short_description = 'Narxi'
+    get_price.admin_order_field = 'price'
+
+    def save_model(self, request, obj, form, change):
+        if not obj.user_id:
+            obj.user = request.user
+        obj.save()
+
+    def has_delete_permission(self, request, obj=None):
+        if obj is not None and not request.user.is_superuser:
+            return obj.user == request.user
+        return super().has_change_permission(request, obj)
+
+    def has_change_permission(self, request, obj=None):
+        if obj is not None and not request.user.is_superuser:
+            return obj.user == request.user
+        return super().has_change_permission(request, obj)
+
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Warehouse, WarehouseAdmin)
+admin.site.register(Sales, SalesAdmin)
+
