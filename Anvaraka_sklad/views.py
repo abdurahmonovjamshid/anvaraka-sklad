@@ -4,7 +4,7 @@ from django.dispatch import receiver
 
 
 @receiver(post_save, sender=Warehouse)
-def add_component_total(sender, instance, created, **kwargs):
+def warehouse_add(sender, instance, created, **kwargs):
     if created:
         component = instance.component
         component.total += instance.quantity
@@ -12,7 +12,7 @@ def add_component_total(sender, instance, created, **kwargs):
 
 
 @receiver(pre_save, sender=Warehouse)
-def update_component_total_on_edit(sender, instance, **kwargs):
+def warehouse_presave(sender, instance, **kwargs):
     if instance.pk:
         old_warehouse = Warehouse.objects.get(pk=instance.pk)
         component = instance.component
@@ -21,14 +21,14 @@ def update_component_total_on_edit(sender, instance, **kwargs):
 
 
 @receiver(post_delete, sender=Warehouse)
-def update_component_total_on_delete(sender, instance, **kwargs):
+def warehouse_delete(sender, instance, **kwargs):
     component = instance.component
     component.total -= instance.quantity
     component.save()
 
 
 @receiver(post_save, sender=Sales)
-def add_component_total(sender, instance, created, **kwargs):
+def sales_add(sender, instance, created, **kwargs):
     if created:
         component = instance.component
         component.total -= instance.quantity
@@ -36,7 +36,7 @@ def add_component_total(sender, instance, created, **kwargs):
 
 
 @receiver(pre_save, sender=Sales)
-def update_component_total_on_edit(sender, instance, **kwargs):
+def sales_presave(sender, instance, **kwargs):
     if instance.pk:
         old_warehouse = Sales.objects.get(pk=instance.pk)
         component = instance.component
@@ -45,7 +45,7 @@ def update_component_total_on_edit(sender, instance, **kwargs):
 
 
 @receiver(post_delete, sender=Sales)
-def update_component_total_on_delete(sender, instance, **kwargs):
+def sales_delete(sender, instance, **kwargs):
     component = instance.component
     component.total += instance.quantity
     component.save()
