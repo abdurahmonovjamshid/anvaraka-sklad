@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-22jbt(!aprl1dl-@7n(@&7o81946xn6asqkf9pf0vo329y4#3c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -107,19 +107,60 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'uz-uz'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tashkent'
 
 USE_I18N = True
 
 USE_TZ = True
 
+JAZZMIN_SETTINGS = {
+    "site_title": "Sahiy Hamkor",
+    "site_header": "Library",
+    "site_brand": "Saxiy Hamkor",
+    "site_logo": "logo/logo.png",
+    "search_model": ["auth.User"],
+    # "show_ui_builder": True,
+
+    "usermenu_links": [
+        {"name": "Support", "url": "https://t.me/Jamshid_Abdurahmonov1",
+            "new_window": True},
+        {"model": "auth.user"}
+    ],
+
+    "topmenu_links": [
+
+        {"name": "Home",  "url": "admin:index",
+            "permissions": ["auth.view_user"]},
+        {"name": "Support", "url": "https://t.me/Jamshid_Abdurahmonov1",
+            "new_window": True},
+        {"model": "auth.User"},
+        {"app": "Anvaraka_sklad"},
+    ],
+    "show_sidebar": True,
+    "order_with_respect_to": ["auth", "seh_1", "Anvaraka_sklad.product", "seh_1.product", "seh_1.warehouse", "seh_1.productproduction", "seh_1.warehouse", 'seh_1.productreproduction'],
+
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "Anvaraka_sklad.product": "fas fa-cubes",
+        "seh_1.product": "fas fa-shopping-bag",
+        "seh_1.productproduction": "fas fa-industry",
+        "Anvaraka_sklad.warehouse": "fas fa-warehouse",
+        "seh_1.productreproduction": "fas fa-cut",
+        "seh_1.sales": "fas fa-shopping-cart",
+    },
+}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_ROOT = 'static'
+STATIC_ROOT = 'static'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

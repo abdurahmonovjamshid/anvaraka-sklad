@@ -53,6 +53,8 @@ atlassian-ide-plugin.xml
 .Python build/ 
 develop-eggs/ 
 dist/ 
+static/
+templates/
 downloads/ 
 eggs/ 
 .eggs/ 
